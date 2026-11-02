@@ -1,0 +1,4 @@
+export function dayForMaterial(id,fallback=0){if(!id)return fallback;const m=/^day-(\d{2})$/.exec(id);return m&&+m[1]>=1&&+m[1]<=14?+m[1]:0}
+export function nextDay(rows){const completed=new Set(rows.map(x=>x.day).filter(x=>x>=1&&x<=14));for(let n=1;n<=14;n++)if(!completed.has(n))return n;return 14}
+export function comparison(rows){const chronological=[...rows].sort((a,b)=>a.created_at-b.created_at||String(a.id).localeCompare(String(b.id)));return {before:chronological.find(x=>x.day===1),after:chronological.findLast(x=>x.day===14)}}
+export function materialCover(item){const id=String(item.id),title=String(item.title).toLowerCase();if(/café|cafe/.test(title)||id==='day-06')return 'cafe';if(/shop/.test(title)||id==='day-08')return 'shop';if(/travel/.test(title)||id==='day-10')return 'travel';if(/job|future/.test(title)||['day-09','day-11'].includes(id))return 'future';if(/stop/.test(title)||id==='dont-stop')return 'word';return 'school'}

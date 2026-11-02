@@ -1,0 +1,11 @@
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY,code TEXT NOT NULL UNIQUE,role TEXT NOT NULL CHECK(role IN ('admin','teacher','student')),password TEXT NOT NULL,active INTEGER NOT NULL DEFAULT 1,study_group TEXT NOT NULL DEFAULT 'ai' CHECK(study_group IN ('ai','comparison')),created_at INTEGER NOT NULL DEFAULT(unixepoch()));
+CREATE TABLE IF NOT EXISTS sessions(hash TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,expires INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS sessions_exp ON sessions(expires);
+CREATE TABLE IF NOT EXISTS materials(id TEXT PRIMARY KEY,title TEXT NOT NULL,description TEXT NOT NULL,category TEXT NOT NULL,body TEXT NOT NULL,task TEXT NOT NULL,support TEXT NOT NULL DEFAULT '{}',cover TEXT NOT NULL DEFAULT '',attachment TEXT NOT NULL DEFAULT '',video TEXT NOT NULL DEFAULT '',status TEXT NOT NULL CHECK(status IN ('draft','published','archived')),version INTEGER NOT NULL DEFAULT 1,author_id TEXT REFERENCES users(id),updated_at INTEGER NOT NULL DEFAULT(unixepoch()));
+CREATE INDEX IF NOT EXISTS materials_status ON materials(status,updated_at);
+CREATE TABLE IF NOT EXISTS submissions(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),material_id TEXT REFERENCES materials(id),topic TEXT NOT NULL,answer TEXT NOT NULL,reflection TEXT NOT NULL,seconds INTEGER NOT NULL,pauses INTEGER NOT NULL,ideas INTEGER NOT NULL,confidence INTEGER NOT NULL,day INTEGER NOT NULL DEFAULT 0,study_group TEXT NOT NULL CHECK(study_group IN ('ai','comparison')),score INTEGER,feedback TEXT NOT NULL DEFAULT '',version INTEGER NOT NULL DEFAULT 1,created_at INTEGER NOT NULL DEFAULT(unixepoch()));
+CREATE INDEX IF NOT EXISTS submissions_user ON submissions(user_id,created_at);
+CREATE TABLE IF NOT EXISTS surveys(id TEXT PRIMARY KEY,user_id TEXT NOT NULL REFERENCES users(id),answers TEXT NOT NULL,biggest TEXT NOT NULL,score INTEGER NOT NULL,created_at INTEGER NOT NULL DEFAULT(unixepoch()));
+CREATE TABLE IF NOT EXISTS quotas(key TEXT PRIMARY KEY,count INTEGER NOT NULL,expires INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS uploads(key TEXT PRIMARY KEY,mime TEXT NOT NULL,owner_id TEXT NOT NULL REFERENCES users(id),created_at INTEGER NOT NULL DEFAULT(unixepoch()));

@@ -1,0 +1,18 @@
+name = "speak-free-api"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+[ai]
+binding = "AI"
+[[d1_databases]]
+binding = "DB"
+database_name = "speak-free-db"
+database_id = "REPLACE_WITH_NEW_D1_DATABASE_ID"
+# Optional R2: uncomment after creating this project's bucket.
+# [[r2_buckets]]
+# binding = "FILES"
+# bucket_name = "speak-free-files"
+[vars]
+ALLOWED_ORIGIN = "https://REPLACE_WITH_GITHUB_USERNAME.github.io"
+[triggers]
+crons = ["0 3 * * *"]
+# IP_SALT is a secret: set in Dashboard or with `wrangler secret put IP_SALT`.
